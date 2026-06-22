@@ -49,3 +49,8 @@ noisyboy
 
 ## License
 MIT License
+
+## Screenshot
+
+<img width="1899" height="826" alt="image" src="https://github.com/user-attachments/assets/c47fa860-3ff4-4bfe-bd5b-5ee7d56e021e" />
+
