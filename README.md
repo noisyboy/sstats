@@ -45,7 +45,7 @@ The architecture separates the packet capture engine from the analysis and visua
    http://127.0.0.1:5000
 
 ## Author
-noisyboy (noisyboy.is-a.dev)
+noisyboy
 
 ## License
 MIT License
