@@ -101,11 +101,14 @@ def analyze_packet(packet):
             
             # --- Hybrid Protocol Counting ---
             
-            # 1. Port-Based Volumetric Counting for Encrypted/Stream Protocols
+            # 1. Port-Based Volumetric Counting for Encrypted/Stream/Standard Protocols
             if dst_port == 22 or src_port == 22:
                 counters["SSH"] += 1
             elif dst_port == 23 or src_port == 23:
                 counters["Telnet"] += 1
+            elif dst_port == 21 or src_port == 21 or dst_port == 20 or src_port == 20:
+                # Catches FTP Control (21) and Active Data (20) traffic
+                counters["FTP"] += 1
 
             # 2. Payload-Based Counting & AI Inspection
             if packet.haslayer(Raw):
@@ -117,15 +120,11 @@ def analyze_packet(packet):
                     packet_info = {"src_ip": src_ip, "dst_port": dst_port}
                     llm_analysis_queue.put((packet_info, payload.decode('utf-8', errors='ignore')))
                 
-                # FTP Payload parsing
-                elif payload.startswith(b"USER ") or payload.startswith(b"PASS ") or payload.startswith(b"220 "):
-                    counters["FTP"] += 1
-                
                 # SMTP Payload parsing
                 elif payload.startswith(b"HELO ") or payload.startswith(b"EHLO "):
                     counters["SMTP"] += 1
                 
-                # Telnet AI Queuing (Since Telnet is unencrypted, we send the raw keystrokes/commands to AI)
+                # Telnet AI Queuing
                 elif dst_port == 23 or src_port == 23:
                     packet_info = {"src_ip": src_ip, "dst_port": dst_port}
                     llm_analysis_queue.put((packet_info, payload.decode('utf-8', errors='ignore')))
